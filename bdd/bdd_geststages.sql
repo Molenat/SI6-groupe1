@@ -1,13 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 4.6.4
+-- version 4.8.4
 -- https://www.phpmyadmin.net/
 --
--- Client :  127.0.0.1
--- Généré le :  Mar 05 Décembre 2017 à 15:55
--- Version du serveur :  5.7.14
--- Version de PHP :  5.6.25
+-- Hôte : 127.0.0.1:3306
+-- Généré le :  jeu. 04 juin 2020 à 08:06
+-- Version du serveur :  5.7.24
+-- Version de PHP :  7.2.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -17,16 +19,10 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données :  `geststages`
+-- Base de données :  `bdd_geststages`
 --
-
-CREATE DATABASE bdd_geststages ;
-USE bdd_geststages ;
-
-CREATE USER 'usergs'@'%' IDENTIFIED BY 'mdpGS';
-GRANT ALL PRIVILEGES ON bdd_geststages.* TO 'usergs'@'%';
-
-
+CREATE DATABASE IF NOT EXISTS `bdd_geststages` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `bdd_geststages`;
 
 -- --------------------------------------------------------
 
@@ -34,284 +30,15 @@ GRANT ALL PRIVILEGES ON bdd_geststages.* TO 'usergs'@'%';
 -- Structure de la table `classe`
 --
 
-CREATE TABLE `classe` (
-  `num_classe` int(32) NOT NULL,
-  `nom_classe` varchar(128) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
--- --------------------------------------------------------
-
---
--- Structure de la table `entreprise`
---
-
-CREATE TABLE `entreprise` (
-  `num_entreprise` int(32) NOT NULL,
-  `raison_sociale` varchar(128) NOT NULL,
-  `nom_contact` varchar(128) DEFAULT NULL,
-  `nom_resp` varchar(128) DEFAULT NULL,
-  `rue_entreprise` varchar(128) DEFAULT NULL,
-  `cp_entreprise` int(32) DEFAULT NULL,
-  `ville_entreprise` varchar(128) NOT NULL,
-  `tel_entreprise` varchar(32) DEFAULT NULL,
-  `fax_entreprise` varchar(32) DEFAULT NULL,
-  `email` varchar(128) DEFAULT NULL,
-  `observation` text,
-  `site_entreprise` varchar(128) DEFAULT NULL,
-  `niveau` varchar(32) NOT NULL,
-  `en_activite` tinyint(1) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
--- --------------------------------------------------------
+DROP TABLE IF EXISTS `classe`;
+CREATE TABLE IF NOT EXISTS `classe` (
+  `num_classe` int(32) NOT NULL AUTO_INCREMENT,
+  `nom_classe` varchar(128) NOT NULL,
+  PRIMARY KEY (`num_classe`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 
 --
--- Structure de la table `etudiant`
---
-
-CREATE TABLE `etudiant` (
-  `num_etudiant` int(32) NOT NULL,
-  `nom_etudiant` varchar(64) NOT NULL,
-  `prenom_etudiant` varchar(64) NOT NULL,
-  `annee_obtention` date DEFAULT NULL,
-  `login` varchar(8) NOT NULL,
-  `mdp` varchar(30) NOT NULL,
-  `num_classe` int(32) NOT NULL,
-  `en_activite` tinyint(1) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `mission`
---
-
-CREATE TABLE `mission` (
-  `num_mission` int(32) NOT NULL,
-  `libelle` varchar(128) NOT NULL,
-  `num_stage` int(32) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
--- --------------------------------------------------------
-
---
--- Structure de la table `professeur`
---
-
-CREATE TABLE `professeur` (
-  `num_prof` int(32) NOT NULL,
-  `nom_prof` varchar(64) NOT NULL,
-  `prenom_prof` varchar(64) NOT NULL,
-  `login` varchar(8) NOT NULL,
-  `mdp` varchar(8) NOT NULL,
-  `email` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
--- --------------------------------------------------------
-
---
--- Structure de la table `prof_classe`
---
-
-CREATE TABLE `prof_classe` (
-  `num_prof` int(32) NOT NULL,
-  `num_classe` int(32) NOT NULL,
-  `est_prof_principal` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-
--- --------------------------------------------------------
-
---
--- Structure de la table `specialite`
---
-
-CREATE TABLE `specialite` (
-  `num_spec` int(32) NOT NULL,
-  `libelle` varchar(128) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
--- --------------------------------------------------------
-
---
--- Structure de la table `spec_entreprise`
---
-
-CREATE TABLE `spec_entreprise` (
-  `num_entreprise` int(32) NOT NULL,
-  `num_spec` int(32) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
--- --------------------------------------------------------
-
---
--- Structure de la table `stage`
---
-
-CREATE TABLE `stage` (
-  `num_stage` int(32) NOT NULL,
-  `debut_stage` datetime NOT NULL,
-  `fin_stage` datetime NOT NULL,
-  `type_stage` varchar(128) DEFAULT NULL,
-  `desc_projet` text,
-  `observation_stage` text,
-  `num_etudiant` int(32) NOT NULL,
-  `num_prof` int(32) NOT NULL,
-  `num_entreprise` int(32) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
---
--- Index pour les tables exportées
---
-
---
--- Index pour la table `classe`
---
-ALTER TABLE `classe`
-  ADD PRIMARY KEY (`num_classe`);
-
---
--- Index pour la table `entreprise`
---
-ALTER TABLE `entreprise`
-  ADD PRIMARY KEY (`num_entreprise`);
-
---
--- Index pour la table `etudiant`
---
-ALTER TABLE `etudiant`
-  ADD PRIMARY KEY (`num_etudiant`),
-  ADD KEY `num_classe` (`num_classe`);
-
---
--- Index pour la table `mission`
---
-ALTER TABLE `mission`
-  ADD PRIMARY KEY (`num_mission`),
-  ADD KEY `num_stage` (`num_stage`);
-
---
--- Index pour la table `professeur`
---
-ALTER TABLE `professeur`
-  ADD PRIMARY KEY (`num_prof`);
-
---
--- Index pour la table `prof_classe`
---
-ALTER TABLE `prof_classe`
-  ADD PRIMARY KEY (`num_prof`,`num_classe`),
-  ADD KEY `num_classe` (`num_classe`);
-
---
--- Index pour la table `specialite`
---
-ALTER TABLE `specialite`
-  ADD PRIMARY KEY (`num_spec`);
-
---
--- Index pour la table `spec_entreprise`
---
-ALTER TABLE `spec_entreprise`
-  ADD PRIMARY KEY (`num_entreprise`,`num_spec`),
-  ADD KEY `num_spec` (`num_spec`);
-
---
--- Index pour la table `stage`
---
-ALTER TABLE `stage`
-  ADD PRIMARY KEY (`num_stage`),
-  ADD KEY `num_etudiant` (`num_etudiant`),
-  ADD KEY `num_prof` (`num_prof`),
-  ADD KEY `num_entreprise` (`num_entreprise`);
-
---
--- AUTO_INCREMENT pour les tables exportées
---
-
---
--- AUTO_INCREMENT pour la table `classe`
---
-ALTER TABLE `classe`
-  MODIFY `num_classe` int(32) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
---
--- AUTO_INCREMENT pour la table `entreprise`
---
-ALTER TABLE `entreprise`
-  MODIFY `num_entreprise` int(32) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
---
--- AUTO_INCREMENT pour la table `etudiant`
---
-ALTER TABLE `etudiant`
-  MODIFY `num_etudiant` int(32) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
---
--- AUTO_INCREMENT pour la table `mission`
---
-ALTER TABLE `mission`
-  MODIFY `num_mission` int(32) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
---
--- AUTO_INCREMENT pour la table `professeur`
---
-ALTER TABLE `professeur`
-  MODIFY `num_prof` int(32) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
---
--- AUTO_INCREMENT pour la table `specialite`
---
-ALTER TABLE `specialite`
-  MODIFY `num_spec` int(32) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
---
--- AUTO_INCREMENT pour la table `stage`
---
-ALTER TABLE `stage`
-  MODIFY `num_stage` int(32) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
---
--- Contraintes pour les tables exportées
---
-
---
--- Contraintes pour la table `etudiant`
---
-ALTER TABLE `etudiant`
-  ADD CONSTRAINT `etudiant_ibfk_1` FOREIGN KEY (`num_classe`) REFERENCES `classe` (`num_classe`);
-
---
--- Contraintes pour la table `mission`
---
-ALTER TABLE `mission`
-  ADD CONSTRAINT `mission_ibfk_1` FOREIGN KEY (`num_stage`) REFERENCES `stage` (`num_stage`);
-
---
--- Contraintes pour la table `prof_classe`
---
-ALTER TABLE `prof_classe`
-  ADD CONSTRAINT `prof_classe_ibfk_1` FOREIGN KEY (`num_prof`) REFERENCES `professeur` (`num_prof`),
-  ADD CONSTRAINT `prof_classe_ibfk_2` FOREIGN KEY (`num_classe`) REFERENCES `classe` (`num_classe`);
-
---
--- Contraintes pour la table `spec_entreprise`
---
-ALTER TABLE `spec_entreprise`
-  ADD CONSTRAINT `spec_entreprise_ibfk_1` FOREIGN KEY (`num_entreprise`) REFERENCES `entreprise` (`num_entreprise`),
-  ADD CONSTRAINT `spec_entreprise_ibfk_2` FOREIGN KEY (`num_spec`) REFERENCES `specialite` (`num_spec`);
-
---
--- Contraintes pour la table `stage`
---
-ALTER TABLE `stage`
-  ADD CONSTRAINT `stage_ibfk_1` FOREIGN KEY (`num_etudiant`) REFERENCES `etudiant` (`num_etudiant`),
-  ADD CONSTRAINT `stage_ibfk_2` FOREIGN KEY (`num_prof`) REFERENCES `professeur` (`num_prof`),
-  ADD CONSTRAINT `stage_ibfk_3` FOREIGN KEY (`num_entreprise`) REFERENCES `entreprise` (`num_entreprise`);
-
-
---
--- Contenu de la table `classe`
+-- Déchargement des données de la table `classe`
 --
 
 INSERT INTO `classe` (`num_classe`, `nom_classe`) VALUES
@@ -331,7 +58,30 @@ INSERT INTO `classe` (`num_classe`, `nom_classe`) VALUES
 -- --------------------------------------------------------
 
 --
--- Contenu de la table `entreprise`
+-- Structure de la table `entreprise`
+--
+
+DROP TABLE IF EXISTS `entreprise`;
+CREATE TABLE IF NOT EXISTS `entreprise` (
+  `num_entreprise` int(32) NOT NULL AUTO_INCREMENT,
+  `raison_sociale` varchar(128) NOT NULL,
+  `nom_contact` varchar(128) DEFAULT NULL,
+  `nom_resp` varchar(128) DEFAULT NULL,
+  `rue_entreprise` varchar(128) DEFAULT NULL,
+  `cp_entreprise` int(32) DEFAULT NULL,
+  `ville_entreprise` varchar(128) NOT NULL,
+  `tel_entreprise` varchar(32) DEFAULT NULL,
+  `fax_entreprise` varchar(32) DEFAULT NULL,
+  `email` varchar(128) DEFAULT NULL,
+  `observation` text,
+  `site_entreprise` varchar(128) DEFAULT NULL,
+  `niveau` varchar(32) NOT NULL,
+  `en_activite` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`num_entreprise`)
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `entreprise`
 --
 
 INSERT INTO `entreprise` (`num_entreprise`, `raison_sociale`, `nom_contact`, `nom_resp`, `rue_entreprise`, `cp_entreprise`, `ville_entreprise`, `tel_entreprise`, `fax_entreprise`, `email`, `observation`, `site_entreprise`, `niveau`, `en_activite`) VALUES
@@ -372,7 +122,25 @@ INSERT INTO `entreprise` (`num_entreprise`, `raison_sociale`, `nom_contact`, `no
 -- --------------------------------------------------------
 
 --
--- Contenu de la table `etudiant`
+-- Structure de la table `etudiant`
+--
+
+DROP TABLE IF EXISTS `etudiant`;
+CREATE TABLE IF NOT EXISTS `etudiant` (
+  `num_etudiant` int(32) NOT NULL AUTO_INCREMENT,
+  `nom_etudiant` varchar(64) NOT NULL,
+  `prenom_etudiant` varchar(64) NOT NULL,
+  `annee_obtention` date DEFAULT NULL,
+  `login` varchar(8) NOT NULL,
+  `mdp` varchar(30) NOT NULL,
+  `num_classe` int(32) NOT NULL,
+  `en_activite` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`num_etudiant`),
+  KEY `num_classe` (`num_classe`)
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `etudiant`
 --
 
 INSERT INTO `etudiant` (`num_etudiant`, `nom_etudiant`, `prenom_etudiant`, `annee_obtention`, `login`, `mdp`, `num_classe`, `en_activite`) VALUES
@@ -405,7 +173,50 @@ INSERT INTO `etudiant` (`num_etudiant`, `nom_etudiant`, `prenom_etudiant`, `anne
 -- --------------------------------------------------------
 
 --
--- Contenu de la table `professeur`
+-- Structure de la table `mission`
+--
+
+DROP TABLE IF EXISTS `mission`;
+CREATE TABLE IF NOT EXISTS `mission` (
+  `num_mission` int(32) NOT NULL AUTO_INCREMENT,
+  `libelle` varchar(128) NOT NULL,
+  `num_stage` int(32) NOT NULL,
+  PRIMARY KEY (`num_mission`),
+  KEY `num_stage` (`num_stage`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `mission`
+--
+
+INSERT INTO `mission` (`num_mission`, `libelle`, `num_stage`) VALUES
+(1, 'Découverte de l\'entreprise', 1),
+(2, 'Prise en main de l\'outil de versioning', 1),
+(3, 'Développement d\'un plugin de type Wordpress pour le CMS de l\'entreprise', 1),
+(4, 'Découverte de l\'entreprise', 3),
+(5, 'Analyse et mise à jour de la documentation technique de l\'application \"appProj\"', 3),
+(6, 'Découverte de l\'entreprise', 5),
+(7, 'Prise en main de l\'API \"comJSON\"', 5);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `professeur`
+--
+
+DROP TABLE IF EXISTS `professeur`;
+CREATE TABLE IF NOT EXISTS `professeur` (
+  `num_prof` int(32) NOT NULL AUTO_INCREMENT,
+  `nom_prof` varchar(64) NOT NULL,
+  `prenom_prof` varchar(64) NOT NULL,
+  `login` varchar(8) NOT NULL,
+  `mdp` varchar(8) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  PRIMARY KEY (`num_prof`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `professeur`
 --
 
 INSERT INTO `professeur` (`num_prof`, `nom_prof`, `prenom_prof`, `login`, `mdp`, `email`) VALUES
@@ -428,7 +239,20 @@ INSERT INTO `professeur` (`num_prof`, `nom_prof`, `prenom_prof`, `login`, `mdp`,
 -- --------------------------------------------------------
 
 --
--- Contenu de la table `prof_classe`
+-- Structure de la table `prof_classe`
+--
+
+DROP TABLE IF EXISTS `prof_classe`;
+CREATE TABLE IF NOT EXISTS `prof_classe` (
+  `num_prof` int(32) NOT NULL,
+  `num_classe` int(32) NOT NULL,
+  `est_prof_principal` tinyint(1) NOT NULL,
+  PRIMARY KEY (`num_prof`,`num_classe`),
+  KEY `num_classe` (`num_classe`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `prof_classe`
 --
 
 INSERT INTO `prof_classe` (`num_prof`, `num_classe`, `est_prof_principal`) VALUES
@@ -466,7 +290,18 @@ INSERT INTO `prof_classe` (`num_prof`, `num_classe`, `est_prof_principal`) VALUE
 -- --------------------------------------------------------
 
 --
--- Contenu de la table `specialite`
+-- Structure de la table `specialite`
+--
+
+DROP TABLE IF EXISTS `specialite`;
+CREATE TABLE IF NOT EXISTS `specialite` (
+  `num_spec` int(32) NOT NULL AUTO_INCREMENT,
+  `libelle` varchar(128) NOT NULL,
+  PRIMARY KEY (`num_spec`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `specialite`
 --
 
 INSERT INTO `specialite` (`num_spec`, `libelle`) VALUES
@@ -480,7 +315,19 @@ INSERT INTO `specialite` (`num_spec`, `libelle`) VALUES
 -- --------------------------------------------------------
 
 --
--- Contenu de la table `spec_entreprise`
+-- Structure de la table `spec_entreprise`
+--
+
+DROP TABLE IF EXISTS `spec_entreprise`;
+CREATE TABLE IF NOT EXISTS `spec_entreprise` (
+  `num_entreprise` int(32) NOT NULL,
+  `num_spec` int(32) NOT NULL,
+  PRIMARY KEY (`num_entreprise`,`num_spec`),
+  KEY `num_spec` (`num_spec`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `spec_entreprise`
 --
 
 INSERT INTO `spec_entreprise` (`num_entreprise`, `num_spec`) VALUES
@@ -525,7 +372,28 @@ INSERT INTO `spec_entreprise` (`num_entreprise`, `num_spec`) VALUES
 -- --------------------------------------------------------
 
 --
--- Contenu de la table `stage`
+-- Structure de la table `stage`
+--
+
+DROP TABLE IF EXISTS `stage`;
+CREATE TABLE IF NOT EXISTS `stage` (
+  `num_stage` int(32) NOT NULL AUTO_INCREMENT,
+  `debut_stage` datetime NOT NULL,
+  `fin_stage` datetime NOT NULL,
+  `type_stage` varchar(128) DEFAULT NULL,
+  `desc_projet` text,
+  `observation_stage` text,
+  `num_etudiant` int(32) NOT NULL,
+  `num_prof` int(32) NOT NULL,
+  `num_entreprise` int(32) NOT NULL,
+  PRIMARY KEY (`num_stage`),
+  KEY `num_etudiant` (`num_etudiant`),
+  KEY `num_prof` (`num_prof`),
+  KEY `num_entreprise` (`num_entreprise`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `stage`
 --
 
 INSERT INTO `stage` (`num_stage`, `debut_stage`, `fin_stage`, `type_stage`, `desc_projet`, `observation_stage`, `num_etudiant`, `num_prof`, `num_entreprise`) VALUES
@@ -533,23 +401,45 @@ INSERT INTO `stage` (`num_stage`, `debut_stage`, `fin_stage`, `type_stage`, `des
 (3, '2016-01-11 00:00:00', '2016-02-19 00:00:00', 'stage', 'Mise à jour de la documentation des applications métiers de l\'entreprise.\r\nDéveloppement d\'un module d\'authentification.', '', 11, 1, 4),
 (5, '2017-01-08 00:00:00', '2017-02-17 00:00:00', 'stage', 'Evolution de l\'application de gestion de projets utilisée par l\'entreprise.<br/>\r\nParticipation à l\'assistance utilisateur pour les divers logiciels développés en interne.', NULL, 11, 2, 5);
 
-
--- --------------------------------------------------------
-
 --
--- Contenu de la table `mission`
+-- Contraintes pour les tables déchargées
 --
 
-INSERT INTO `mission` (`num_mission`, `libelle`, `num_stage`) VALUES
-(1, 'Découverte de l\'entreprise', 1),
-(2, 'Prise en main de l\'outil de versioning', 1),
-(3, 'Développement d\'un plugin de type Wordpress pour le CMS de l\'entreprise', 1),
-(4, 'Découverte de l\'entreprise', 3),
-(5, 'Analyse et mise à jour de la documentation technique de l\'application "appProj"', 3),
-(6, 'Découverte de l\'entreprise', 5),
-(7, 'Prise en main de l\'API "comJSON"', 5);
+--
+-- Contraintes pour la table `etudiant`
+--
+ALTER TABLE `etudiant`
+  ADD CONSTRAINT `etudiant_ibfk_1` FOREIGN KEY (`num_classe`) REFERENCES `classe` (`num_classe`);
+
+--
+-- Contraintes pour la table `mission`
+--
+ALTER TABLE `mission`
+  ADD CONSTRAINT `mission_ibfk_1` FOREIGN KEY (`num_stage`) REFERENCES `stage` (`num_stage`);
+
+--
+-- Contraintes pour la table `prof_classe`
+--
+ALTER TABLE `prof_classe`
+  ADD CONSTRAINT `prof_classe_ibfk_1` FOREIGN KEY (`num_prof`) REFERENCES `professeur` (`num_prof`),
+  ADD CONSTRAINT `prof_classe_ibfk_2` FOREIGN KEY (`num_classe`) REFERENCES `classe` (`num_classe`);
+
+--
+-- Contraintes pour la table `spec_entreprise`
+--
+ALTER TABLE `spec_entreprise`
+  ADD CONSTRAINT `spec_entreprise_ibfk_1` FOREIGN KEY (`num_entreprise`) REFERENCES `entreprise` (`num_entreprise`),
+  ADD CONSTRAINT `spec_entreprise_ibfk_2` FOREIGN KEY (`num_spec`) REFERENCES `specialite` (`num_spec`);
+
+--
+-- Contraintes pour la table `stage`
+--
+ALTER TABLE `stage`
+  ADD CONSTRAINT `stage_ibfk_1` FOREIGN KEY (`num_etudiant`) REFERENCES `etudiant` (`num_etudiant`),
+  ADD CONSTRAINT `stage_ibfk_2` FOREIGN KEY (`num_prof`) REFERENCES `professeur` (`num_prof`),
+  ADD CONSTRAINT `stage_ibfk_3` FOREIGN KEY (`num_entreprise`) REFERENCES `entreprise` (`num_entreprise`);
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-

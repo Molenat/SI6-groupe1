@@ -21,8 +21,8 @@ function makeMenu($admin, $deconnexion)
     $ongletStagiaire->addPage('ajoutModifEtu.php');
     $ongletStagiaire->addPage('rechercherStagiaire.php');
     $ongletStagiaire->addPage('infoStagiaire.php');
+
     $menu = new Menu();
-    
     $menu->addOnglet($ongletAccueil);
     $menu->addOnglet($ongletEntreprise);
     $menu->addOnglet($ongletStagiaire);
